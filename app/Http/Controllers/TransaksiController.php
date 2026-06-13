@@ -60,7 +60,7 @@ class TransaksiController extends Controller
         summary: 'Detail transaksi',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'transaksi', required: true, schema: new OA\Schema(type: 'string'))
+            new OA\PathParameter(name: 'transaksi', description: 'transaksi_id', required: true, schema: new OA\Schema(type: 'string'))
         ],
         responses: [
             new OA\Response(response: 200, description: 'Detail transaksi berhasil diambil'),

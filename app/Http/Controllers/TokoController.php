@@ -85,7 +85,7 @@ class TokoController extends Controller
         summary: 'Detail toko',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'toko', required: true, schema: new OA\Schema(type: 'string'))
+            new OA\PathParameter(name: 'toko', description: 'toko_id', required: true, schema: new OA\Schema(type: 'string'))
         ],
         responses: [
             new OA\Response(response: 200, description: 'Detail toko berhasil diambil'),
@@ -105,7 +105,7 @@ class TokoController extends Controller
         summary: 'Ubah data toko',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'toko', required: true, schema: new OA\Schema(type: 'string'))
+            new OA\PathParameter(name: 'toko', description: 'toko_id', required: true, schema: new OA\Schema(type: 'string'))
         ],
         requestBody: new OA\RequestBody(
             required: true,
@@ -148,7 +148,7 @@ class TokoController extends Controller
         summary: 'Hapus toko',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'toko', required: true, schema: new OA\Schema(type: 'string'))
+            new OA\PathParameter(name: 'toko', description: 'toko_id', required: true, schema: new OA\Schema(type: 'string'))
         ],
         responses: [
             new OA\Response(response: 200, description: 'Toko berhasil dihapus'),

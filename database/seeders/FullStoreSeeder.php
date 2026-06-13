@@ -24,7 +24,7 @@ class FullStoreSeeder extends Seeder
         // 1. Buat Owner baru
         $owner = User::factory()->create([
             'name' => "Owner",
-            'email' => "owner.@example.com",
+            'email' => "owner",
             'username' => "owner",
             'password' => Hash::make('owner123'),
             'role' => 'owner',
@@ -53,8 +53,8 @@ class FullStoreSeeder extends Seeder
         // 4. Buat Admin baru untuk Toko ini
         $admin = User::factory()->create([
             'name' => 'Admin Toko '.$toko->nama,
-            'email' => 'admin.@example.com',
-            'username' => 'admin',
+            'email' => "admin@example.com",
+            'username' => "admin",
             'password' => Hash::make('admin123'),
             'role' => 'staff', // Role sistem adalah 'staff'
             'is_active' => true,
@@ -69,8 +69,8 @@ class FullStoreSeeder extends Seeder
         // 5. Buat Kasir baru untuk Toko ini
         $kasir = User::factory()->create([
             'name' => 'Kasir Toko ' . $toko->nama,
-            'email' => 'kasir.@example.com',
-            'username' => 'kasir',
+            'email' => "kasir@example.com",
+            'username' => "kasir",
             'password' => Hash::make('kasir123'),
             'role' => 'staff', // Role sistem adalah 'staff'
             'is_active' => true,
@@ -82,9 +82,12 @@ class FullStoreSeeder extends Seeder
         ]);
         $this->command->info("Kasir baru dibuat: {$kasir->name} (ID: {$kasir->id}) untuk Toko {$toko->nama}");
 
-        // 6. Pastikan ada KategoriProduk atau buat satu
-        $kategori = KategoriProduk::first() ?: KategoriProduk::factory()->create(['kategori' => 'Umum']);
-        $this->command->info("Kategori Produk digunakan: {$kategori->kategori} (ID: {$kategori->id})");
+        // 6. Buat KategoriProduk khusus untuk toko baru ini agar terisolasi per toko
+        $kategori = KategoriProduk::create([
+            'kategori' => 'Umum',
+            'toko_id' => $toko->id,
+        ]);
+        $this->command->info("Kategori Produk dibuat: {$kategori->kategori} (ID: {$kategori->id}) untuk Toko {$toko->nama}");
 
         // 7. Buat beberapa Produk untuk Toko baru
         $produks = Produk::factory(5)->create([

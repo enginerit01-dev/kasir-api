@@ -293,6 +293,7 @@
                     {
                         "name": "kategori_produk",
                         "in": "path",
+                        "description": "kategori_produk_id",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -326,6 +327,7 @@
                     {
                         "name": "kategori_produk",
                         "in": "path",
+                        "description": "kategori_produk_id",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -381,6 +383,7 @@
                     {
                         "name": "kategori_produk",
                         "in": "path",
+                        "description": "kategori_produk_id",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -725,6 +728,7 @@
                     {
                         "name": "produk",
                         "in": "path",
+                        "description": "produk_id",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -758,6 +762,7 @@
                     {
                         "name": "produk",
                         "in": "path",
+                        "description": "produk_id",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -833,6 +838,7 @@
                     {
                         "name": "produk",
                         "in": "path",
+                        "description": "produk_id",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -980,6 +986,7 @@
                     {
                         "name": "toko",
                         "in": "path",
+                        "description": "toko_id",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1016,6 +1023,7 @@
                     {
                         "name": "toko",
                         "in": "path",
+                        "description": "toko_id",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1083,6 +1091,7 @@
                     {
                         "name": "toko",
                         "in": "path",
+                        "description": "toko_id",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1121,6 +1130,7 @@
                     {
                         "name": "toko",
                         "in": "path",
+                        "description": "toko_id",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1177,6 +1187,7 @@
                     {
                         "name": "toko",
                         "in": "path",
+                        "description": "toko_id",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1246,6 +1257,7 @@
                     {
                         "name": "toko",
                         "in": "path",
+                        "description": "toko_id",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1254,6 +1266,7 @@
                     {
                         "name": "user",
                         "in": "path",
+                        "description": "user_id",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1317,6 +1330,7 @@
                     {
                         "name": "toko",
                         "in": "path",
+                        "description": "toko_id",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1325,6 +1339,7 @@
                     {
                         "name": "user",
                         "in": "path",
+                        "description": "user_id",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1477,6 +1492,7 @@
                     {
                         "name": "transaksi",
                         "in": "path",
+                        "description": "transaksi_id",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1634,6 +1650,7 @@
                     {
                         "name": "user",
                         "in": "path",
+                        "description": "user_id",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1670,6 +1687,7 @@
                     {
                         "name": "user",
                         "in": "path",
+                        "description": "user_id",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1751,6 +1769,7 @@
                     {
                         "name": "user",
                         "in": "path",
+                        "description": "user_id",
                         "required": true,
                         "schema": {
                             "type": "string"

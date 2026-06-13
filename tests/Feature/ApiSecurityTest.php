@@ -158,4 +158,37 @@ class ApiSecurityTest extends TestCase
         $response = $this->getJson('/api/produk');
         $response->assertJsonCount(2, 'data');
     }
+
+    /** @test */
+    public function test_owner_can_create_kasir_for_their_store()
+    {
+        $toko = Toko::factory()->create();
+        $owner = User::factory()->create(['role' => 'owner']);
+        $toko->update(['owner_id' => $owner->id]);
+
+        Sanctum::actingAs($owner);
+
+        $response = $this->postJson('/api/user', [
+            'name' => 'Kasir Baru',
+            'email' => 'kasirbaru@example.com',
+            'username' => 'kasirbaru',
+            'password' => 'password123',
+            'role' => 'kasir',
+            'toko_id' => $toko->id,
+            'is_active' => true,
+        ]);
+
+        $response->assertStatus(201);
+        $this->assertDatabaseHas('users', [
+            'username' => 'kasirbaru',
+            'role' => 'staff' // Role sistem dasar adalah staff
+        ]);
+
+        $newUser = User::where('username', 'kasirbaru')->first();
+        $this->assertDatabaseHas('toko_user', [
+            'user_id' => $newUser->id,
+            'toko_id' => $toko->id,
+            'role' => 'kasir'
+        ]);
+    }
 }

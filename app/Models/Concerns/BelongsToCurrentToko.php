@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Auth;
 
 trait BelongsToCurrentToko
 {
+    public function initializeBelongsToCurrentToko(): void
+    {
+        $this->appends[] = 'nama_toko';
+    }
+
     public static function bootBelongsToCurrentToko(): void
     {
         static::addGlobalScope('current_toko', function (Builder $builder): void {
@@ -16,7 +21,16 @@ trait BelongsToCurrentToko
 
             if (! $user) return;
 
-            if ($user->role === 'super_admin') return;
+            if ($user->role === 'super_admin') {
+                $builder->with('toko:id,nama');
+                $tokoId = request('toko_id') ?? request('toko');
+                if ($tokoId) {
+                    $builder->where($builder->qualifyColumn('toko_id'), $tokoId);
+                }
+                return;
+            }
+
+            $builder->with('toko:id,nama');
 
             //filter toko milik owner
 
@@ -65,6 +79,11 @@ trait BelongsToCurrentToko
                 }
             }
         });
+    }
+
+    public function getNamaTokoAttribute(): ?string
+    {
+        return $this->toko?->nama;
     }
 
     public function toko(): BelongsTo

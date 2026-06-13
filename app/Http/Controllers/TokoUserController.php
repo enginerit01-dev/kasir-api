@@ -49,7 +49,7 @@ class TokoUserController extends Controller
         summary: 'Daftar staf di toko',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'toko', required: true, schema: new OA\Schema(type: 'string')),
+            new OA\PathParameter(name: 'toko', description: 'toko_id', required: true, schema: new OA\Schema(type: 'string')),
             new OA\QueryParameter(name: 'q', required: false, schema: new OA\Schema(type: 'string')),
             new OA\QueryParameter(name: 'role', required: false, schema: new OA\Schema(type: 'string', enum: ['admin', 'kasir'])),
         ],
@@ -95,7 +95,7 @@ class TokoUserController extends Controller
         summary: 'Assign staf ke toko',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'toko', required: true, schema: new OA\Schema(type: 'string')),
+            new OA\PathParameter(name: 'toko', description: 'toko_id', required: true, schema: new OA\Schema(type: 'string')),
         ],
         requestBody: new OA\RequestBody(
             required: true,
@@ -168,8 +168,8 @@ class TokoUserController extends Controller
         summary: 'Update role atau status staf di toko',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'toko', required: true, schema: new OA\Schema(type: 'string')),
-            new OA\PathParameter(name: 'user', required: true, schema: new OA\Schema(type: 'string')),
+            new OA\PathParameter(name: 'toko', description: 'toko_id', required: true, schema: new OA\Schema(type: 'string')),
+            new OA\PathParameter(name: 'user', description: 'user_id', required: true, schema: new OA\Schema(type: 'string')),
         ],
         requestBody: new OA\RequestBody(
             required: true,
@@ -226,8 +226,8 @@ class TokoUserController extends Controller
         summary: 'Keluarkan staf dari toko',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'toko', required: true, schema: new OA\Schema(type: 'string')),
-            new OA\PathParameter(name: 'user', required: true, schema: new OA\Schema(type: 'string')),
+            new OA\PathParameter(name: 'toko', description: 'toko_id', required: true, schema: new OA\Schema(type: 'string')),
+            new OA\PathParameter(name: 'user', description: 'user_id', required: true, schema: new OA\Schema(type: 'string')),
         ],
         responses: [
             new OA\Response(response: 200, description: 'Staf berhasil dikeluarkan dari toko'),

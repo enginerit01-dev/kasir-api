@@ -34,7 +34,59 @@ class DashboardController extends Controller
     )]
     public function summary(Request $request)
     {
-        $tokoId = Auth::user()->getTokoAktifId();
+        $user = Auth::user();
+
+        // If super_admin and no toko_id is passed, return summaries for all stores.
+        if ($user->role === 'super_admin' && !$request->has('toko_id')) {
+            $tokos = \App\Models\Toko::all();
+            $today = now()->toDateString();
+            $month = now()->format('Y-m');
+
+            $data = $tokos->map(function ($toko) use ($today, $month) {
+                $tokoId = $toko->id;
+                $totalOmzet = Transaksi::withoutGlobalScopes()->where('toko_id', $tokoId)->sum('grand_total');
+                $totalTransaksi = Transaksi::withoutGlobalScopes()->where('toko_id', $tokoId)->count();
+
+                $omzetHarian = Transaksi::withoutGlobalScopes()->where('toko_id', $tokoId)
+                    ->whereDate('tanggal', $today)
+                    ->sum('grand_total');
+                $transaksiHarian = Transaksi::withoutGlobalScopes()->where('toko_id', $tokoId)
+                    ->whereDate('tanggal', $today)
+                    ->count();
+
+                $omzetBulanan = Transaksi::withoutGlobalScopes()->where('toko_id', $tokoId)
+                    ->where('tanggal', 'like', $month.'%')
+                    ->sum('grand_total');
+                $transaksiBulanan = Transaksi::withoutGlobalScopes()->where('toko_id', $tokoId)
+                    ->where('tanggal', 'like', $month.'%')
+                    ->count();
+
+                return [
+                    'toko_id' => $tokoId,
+                    'nama_toko' => $toko->nama,
+                    'total_omzet' => (int) $totalOmzet,
+                    'total_transaksi' => (int) $totalTransaksi,
+                    'omzet_harian' => (int) $omzetHarian,
+                    'transaksi_harian' => (int) $transaksiHarian,
+                    'omzet_bulanan' => (int) $omzetBulanan,
+                    'transaksi_bulanan' => (int) $transaksiBulanan,
+                ];
+            });
+
+            return response()->json($data);
+        }
+
+        $tokoId = $user->getTokoAktifId();
+
+        if ($user->role === 'super_admin' && $request->has('toko_id')) {
+            $tokoId = $request->toko_id;
+        }
+
+        if (!$tokoId) {
+            return response()->json(['message' => 'Toko ID diperlukan untuk melihat dashboard.'], 400);
+        }
+
+        $toko = \App\Models\Toko::find($tokoId);
         $today = now()->toDateString();
         $month = now()->format('Y-m');
 
@@ -56,12 +108,14 @@ class DashboardController extends Controller
             ->count();
 
         return response()->json([
-            'total_omzet' => $totalOmzet,
-            'total_transaksi' => $totalTransaksi,
-            'omzet_harian' => $omzetHarian,
-            'transaksi_harian' => $transaksiHarian,
-            'omzet_bulanan' => $omzetBulanan,
-            'transaksi_bulanan' => $transaksiBulanan,
+            'toko_id' => $tokoId,
+            'nama_toko' => $toko?->nama,
+            'total_omzet' => (int) $totalOmzet,
+            'total_transaksi' => (int) $totalTransaksi,
+            'omzet_harian' => (int) $omzetHarian,
+            'transaksi_harian' => (int) $transaksiHarian,
+            'omzet_bulanan' => (int) $omzetBulanan,
+            'transaksi_bulanan' => (int) $transaksiBulanan,
         ]);
     }
 }

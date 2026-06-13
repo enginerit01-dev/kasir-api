@@ -144,7 +144,7 @@ class UserController extends Controller
         summary: 'Detail user',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'user', required: true, schema: new OA\Schema(type: 'string'))
+            new OA\PathParameter(name: 'user', description: 'user_id', required: true, schema: new OA\Schema(type: 'string'))
         ],
         responses: [
             new OA\Response(response: 200, description: 'Detail user berhasil diambil'),
@@ -168,7 +168,7 @@ class UserController extends Controller
         summary: 'Ubah user',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'user', required: true, schema: new OA\Schema(type: 'string'))
+            new OA\PathParameter(name: 'user', description: 'user_id', required: true, schema: new OA\Schema(type: 'string'))
         ],
         requestBody: new OA\RequestBody(
             required: true,
@@ -252,7 +252,7 @@ class UserController extends Controller
         summary: 'Hapus user',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'user', required: true, schema: new OA\Schema(type: 'string'))
+            new OA\PathParameter(name: 'user', description: 'user_id', required: true, schema: new OA\Schema(type: 'string'))
         ],
         responses: [
             new OA\Response(response: 200, description: 'User berhasil dihapus'),

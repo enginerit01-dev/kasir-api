@@ -84,14 +84,20 @@ class ProdukController extends Controller
     )]
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $rules = [
             'nama' => 'required|string|max:100',
             'kategori_id' => 'required|exists:kategori_produk,id',
             'harga' => 'required|integer',
             'stok' => 'required|integer',
             'kode_produk' => 'required|string|max:50|unique:produk,kode_produk',
             'is_active' => 'boolean',
-        ]);
+        ];
+
+        if (Auth::user()?->role === 'super_admin') {
+            $rules['toko_id'] = 'required|exists:toko,id';
+        }
+
+        $data = $request->validate($rules);
         $produk = Produk::create($data);
         return response()->json($produk, 201);
     }
@@ -102,7 +108,7 @@ class ProdukController extends Controller
         summary: 'Detail produk',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'produk', required: true, schema: new OA\Schema(type: 'string'))
+            new OA\PathParameter(name: 'produk', description: 'produk_id', required: true, schema: new OA\Schema(type: 'string'))
         ],
         responses: [
             new OA\Response(response: 200, description: 'Detail produk berhasil diambil'),
@@ -122,7 +128,7 @@ class ProdukController extends Controller
         summary: 'Ubah produk',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'produk', required: true, schema: new OA\Schema(type: 'string'))
+            new OA\PathParameter(name: 'produk', description: 'produk_id', required: true, schema: new OA\Schema(type: 'string'))
         ],
         requestBody: new OA\RequestBody(
             required: true,
@@ -148,14 +154,20 @@ class ProdukController extends Controller
     public function update(Request $request, $id)
     {
         $produk = Produk::findOrFail($id);
-        $data = $request->validate([
+        $rules = [
             'nama' => 'sometimes|required|string|max:100',
             'kategori_id' => 'sometimes|required|exists:kategori_produk,id',
             'harga' => 'sometimes|required|integer',
             'stok' => 'sometimes|required|integer',
             'kode_produk' => 'sometimes|string|max:50|unique:produk,kode_produk,' . $produk->id,
             'is_active' => 'boolean',
-        ]);
+        ];
+
+        if (Auth::user()?->role === 'super_admin') {
+            $rules['toko_id'] = 'sometimes|required|exists:toko,id';
+        }
+
+        $data = $request->validate($rules);
         $produk->update($data);
         return response()->json($produk);
     }
@@ -166,7 +178,7 @@ class ProdukController extends Controller
         summary: 'Hapus produk',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'produk', required: true, schema: new OA\Schema(type: 'string'))
+            new OA\PathParameter(name: 'produk', description: 'produk_id', required: true, schema: new OA\Schema(type: 'string'))
         ],
         responses: [
             new OA\Response(response: 204, description: 'Produk berhasil dihapus'),

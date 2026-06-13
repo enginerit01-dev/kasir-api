@@ -32,9 +32,14 @@ class LaporanController extends Controller
         if (! $user->hasActiveRole(['super_admin', 'owner', 'admin', 'kasir'])) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
-        $tokoId = $user->getTokoAktifId();
+
+        // For non-super_admin, make sure they have a store
+        if ($user->role !== 'super_admin' && !$user->getTokoAktifId()) {
+            return response()->json(['message' => 'Toko ID diperlukan.'], 400);
+        }
+
         $kasirId = $request->input('kasir_id');
-        $query = Transaksi::where('toko_id', $tokoId);
+        $query = Transaksi::query();
         if ($kasirId) {
             $query->where('user_id', $kasirId);
         }
@@ -65,8 +70,13 @@ class LaporanController extends Controller
         if (! $user->hasActiveRole(['super_admin', 'owner', 'admin'])) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
-        $tokoId = $user->getTokoAktifId();
-        $query = Transaksi::where('toko_id', $tokoId);
+
+        // For non-super_admin, make sure they have a store
+        if ($user->role !== 'super_admin' && !$user->getTokoAktifId()) {
+            return response()->json(['message' => 'Toko ID diperlukan.'], 400);
+        }
+
+        $query = Transaksi::query();
         if ($request->filled('tanggal')) {
             $query->whereDate('tanggal', $request->tanggal);
         }
@@ -98,20 +108,27 @@ class LaporanController extends Controller
         if (! $user->hasActiveRole(['super_admin', 'owner', 'admin', 'kasir'])) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
-        $tokoId = $user->getTokoAktifId();
+
+        // For non-super_admin, make sure they have a store
+        if ($user->role !== 'super_admin' && !$user->getTokoAktifId()) {
+            return response()->json(['message' => 'Toko ID diperlukan.'], 400);
+        }
+
         $tanggal = $request->input('tanggal');
-        $query = DetailTransaksi::select('produk_id', DB::raw('SUM(jumlah) as total_terjual'))
-            ->whereHas('transaksi', function($q) use ($tokoId, $tanggal) {
-                $q->where('toko_id', $tokoId);
-                if ($tanggal) {
-                    $q->whereDate('tanggal', $tanggal);
-                }
-            })
-            ->groupBy('produk_id')
+        $query = DetailTransaksi::select('produk_id', DB::raw('SUM(jumlah) as total_terjual'));
+
+        if ($tanggal) {
+            $query->whereHas('transaksi', function($q) use ($tanggal) {
+                $q->whereDate('tanggal', $tanggal);
+            });
+        }
+
+        $query->groupBy('produk_id')
             ->orderByDesc('total_terjual')
             ->with('produk')
-            ->limit(10)
-            ->get();
-        return response()->json($query);
+            ->limit(10);
+
+        $data = $query->get();
+        return response()->json($data);
     }
 }

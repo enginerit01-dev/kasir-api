@@ -82,6 +82,10 @@ class User extends Authenticatable
     // untuk staff (role=staff), ini ambil dari toko_user
     public function getTokoAktifId(): ?string
     {
+        if ($this->role === 'super_admin') {
+            return request('toko_id') ?? request('toko');
+        }
+
         if ($this->role === 'owner') {
             return $this->tokoMilik()->first()?->id;
         }

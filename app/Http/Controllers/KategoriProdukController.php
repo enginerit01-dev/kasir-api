@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\KategoriProduk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use OpenApi\Attributes as OA;
 
 class KategoriProdukController extends Controller
@@ -72,9 +73,23 @@ class KategoriProdukController extends Controller
     )]
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'kategori' => 'required|string|max:50|unique:kategori_produk,kategori',
-        ]);
+        $user = Auth::user();
+        $tokoId = $user->getTokoAktifId();
+
+        $rules = [
+            'kategori' => [
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('kategori_produk', 'kategori')->where('toko_id', $tokoId),
+            ],
+        ];
+
+        if ($user->role === 'super_admin') {
+            $rules['toko_id'] = 'required|exists:toko,id';
+        }
+
+        $data = $request->validate($rules);
 
         $kategori = KategoriProduk::create($data);
 
@@ -87,7 +102,7 @@ class KategoriProdukController extends Controller
         summary: 'Detail kategori produk',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'kategori_produk', required: true, schema: new OA\Schema(type: 'string'))
+            new OA\PathParameter(name: 'kategori_produk', description: 'kategori_produk_id', required: true, schema: new OA\Schema(type: 'string'))
         ],
         responses: [
             new OA\Response(response: 200, description: 'Detail kategori berhasil diambil'),
@@ -108,7 +123,7 @@ class KategoriProdukController extends Controller
         summary: 'Ubah kategori produk',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'kategori_produk', required: true, schema: new OA\Schema(type: 'string'))
+            new OA\PathParameter(name: 'kategori_produk', description: 'kategori_produk_id', required: true, schema: new OA\Schema(type: 'string'))
         ],
         requestBody: new OA\RequestBody(
             required: true,
@@ -129,10 +144,25 @@ class KategoriProdukController extends Controller
     public function update(Request $request, string $id)
     {
         $kategori = KategoriProduk::findOrFail($id);
+        $user = Auth::user();
 
-        $data = $request->validate([
-            'kategori' => 'sometimes|required|string|max:50|unique:kategori_produk,kategori,'.$kategori->id,
-        ]);
+        $rules = [
+            'kategori' => [
+                'sometimes',
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('kategori_produk', 'kategori')
+                    ->where('toko_id', $kategori->toko_id)
+                    ->ignore($kategori->id),
+            ],
+        ];
+
+        if ($user->role === 'super_admin') {
+            $rules['toko_id'] = 'sometimes|required|exists:toko,id';
+        }
+
+        $data = $request->validate($rules);
 
         $kategori->update($data);
 
@@ -145,7 +175,7 @@ class KategoriProdukController extends Controller
         summary: 'Hapus kategori produk',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'kategori_produk', required: true, schema: new OA\Schema(type: 'string'))
+            new OA\PathParameter(name: 'kategori_produk', description: 'kategori_produk_id', required: true, schema: new OA\Schema(type: 'string'))
         ],
         responses: [
             new OA\Response(response: 204, description: 'Kategori berhasil dihapus'),
