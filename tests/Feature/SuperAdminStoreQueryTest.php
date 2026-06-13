@@ -62,12 +62,14 @@ class SuperAdminStoreQueryTest extends TestCase
             'kode_produk' => 'LP-001',
             'is_active' => true,
             'toko_id' => $this->tokoA->id,
+            'gambar' => 'https://example.com/laptop.jpg',
         ]);
 
         $response->assertStatus(201);
         $this->assertDatabaseHas('produk', [
             'nama' => 'Laptop ASUS',
             'toko_id' => $this->tokoA->id,
+            'gambar' => 'https://example.com/laptop.jpg',
         ]);
     }
 

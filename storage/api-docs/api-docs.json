@@ -689,6 +689,11 @@
                                     "is_active": {
                                         "type": "boolean",
                                         "example": true
+                                    },
+                                    "gambar": {
+                                        "type": "string",
+                                        "example": "https://example.com/gambar.jpg",
+                                        "nullable": true
                                     }
                                 },
                                 "type": "object"
@@ -798,6 +803,11 @@
                                     "is_active": {
                                         "type": "boolean",
                                         "example": true
+                                    },
+                                    "gambar": {
+                                        "type": "string",
+                                        "example": "https://example.com/gambar.jpg",
+                                        "nullable": true
                                     }
                                 },
                                 "type": "object"

@@ -71,7 +71,8 @@ class ProdukController extends Controller
                     new OA\Property(property: 'harga', type: 'integer', example: 5000),
                     new OA\Property(property: 'stok', type: 'integer', example: 20),
                     new OA\Property(property: 'kode_produk', type: 'string', example: 'PRD-001'),
-                    new OA\Property(property: 'is_active', type: 'boolean', example: true)
+                    new OA\Property(property: 'is_active', type: 'boolean', example: true),
+                    new OA\Property(property: 'gambar', type: 'string', nullable: true, example: 'https://example.com/gambar.jpg')
                 ]
             )
         ),
@@ -91,6 +92,7 @@ class ProdukController extends Controller
             'stok' => 'required|integer',
             'kode_produk' => 'required|string|max:50|unique:produk,kode_produk',
             'is_active' => 'boolean',
+            'gambar' => 'nullable|string|max:255',
         ];
 
         if (Auth::user()?->role === 'super_admin') {
@@ -139,7 +141,8 @@ class ProdukController extends Controller
                     new OA\Property(property: 'harga', type: 'integer', example: 6000),
                     new OA\Property(property: 'stok', type: 'integer', example: 25),
                     new OA\Property(property: 'kode_produk', type: 'string', example: 'PRD-001'),
-                    new OA\Property(property: 'is_active', type: 'boolean', example: true)
+                    new OA\Property(property: 'is_active', type: 'boolean', example: true),
+                    new OA\Property(property: 'gambar', type: 'string', nullable: true, example: 'https://example.com/gambar.jpg')
                 ]
             )
         ),
@@ -161,6 +164,7 @@ class ProdukController extends Controller
             'stok' => 'sometimes|required|integer',
             'kode_produk' => 'sometimes|string|max:50|unique:produk,kode_produk,' . $produk->id,
             'is_active' => 'boolean',
+            'gambar' => 'nullable|string|max:255',
         ];
 
         if (Auth::user()?->role === 'super_admin') {
