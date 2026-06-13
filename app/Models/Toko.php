@@ -6,11 +6,15 @@ use Database\Factories\TokoFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
 class Toko extends Model
 {
     /** @use HasFactory<TokoFactory> */
-    use HasFactory;
+    use HasFactory, HasUlids;
 
     protected $table = 'toko';
 
@@ -19,6 +23,7 @@ class Toko extends Model
         'alamat',
         'telepon',
         'is_active',
+        'owner_id'
     ];
 
     protected function casts(): array
@@ -28,9 +33,16 @@ class Toko extends Model
         ];
     }
 
-    public function users(): HasMany
+    public function owner(): BelongsTo
     {
-        return $this->hasMany(User::class);
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    public function staf(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'toko_user')
+        ->withPivot('role', 'is_active')
+        ->withTimestamps();
     }
 
     public function produk(): HasMany

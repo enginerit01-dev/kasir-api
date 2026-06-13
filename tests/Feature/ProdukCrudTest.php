@@ -17,7 +17,8 @@ class ProdukCrudTest extends TestCase
     {
         $toko = Toko::factory()->create();
         $kategori = \App\Models\KategoriProduk::factory()->create();
-        $admin = User::factory()->create(['role' => 'admin', 'toko_id' => $toko->id]);
+        $admin = User::factory()->create(['role' => 'staff']);
+        $admin->tokoTugas()->attach($toko->id, ['role' => 'admin', 'is_active' => true]);
         Sanctum::actingAs($admin);
 
         // CREATE

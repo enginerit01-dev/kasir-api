@@ -34,7 +34,7 @@ class DashboardController extends Controller
     )]
     public function summary(Request $request)
     {
-        $tokoId = Auth::user()->toko_id;
+        $tokoId = Auth::user()->getTokoAktifId();
         $today = now()->toDateString();
         $month = now()->format('Y-m');
 

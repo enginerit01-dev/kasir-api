@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('toko', function (Blueprint $table) {
-            $table->id();
+            $table->ulid('id')->primary();
             $table->string('nama',50);
             $table->string('alamat',255);
             $table->string('telepon',14)->unique();

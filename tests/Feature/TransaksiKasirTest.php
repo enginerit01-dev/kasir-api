@@ -17,7 +17,8 @@ class TransaksiKasirTest extends TestCase
     {
         $toko = Toko::factory()->create();
         $kategori = \App\Models\KategoriProduk::factory()->create();
-        $kasir = User::factory()->create(['role' => 'kasir', 'toko_id' => $toko->id]);
+        $kasir = User::factory()->create(['role' => 'staff']);
+        $kasir->tokoTugas()->attach($toko->id, ['role' => 'kasir', 'is_active' => true]);
         $produk = Produk::factory()->create([
             'stok' => $stok,
             'harga' => $harga,

@@ -3,13 +3,16 @@
 namespace App\Models;
 
 use App\Models\Concerns\BelongsToCurrentToko;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Transaksi extends Model
 {
-    use BelongsToCurrentToko;
+    use BelongsToCurrentToko, HasUlids, HasFactory;
 
     protected $table = 'transaksi';
 
@@ -37,8 +40,8 @@ class Transaksi extends Model
             'nominal_bayar' => 'integer',
             'kembalian' => 'integer',
             'status' => 'integer',
-            'user_id' => 'integer',
-            'toko_id' => 'integer',
+            'user_id' => 'string',
+            'toko_id' => 'string',
         ];
     }
 

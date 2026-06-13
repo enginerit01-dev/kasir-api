@@ -24,7 +24,21 @@ class EnsureUserHasRole
             ], 401);
         }
 
-        if ($roles === [] || in_array($user->role, $roles, true)) {
+        if ($roles === []) {
+            return $next($request);
+        }
+
+        //cek role sistem super admin dan owner
+        if (in_array($user->role, $roles, true)){
+            return $next($request);
+        }
+
+        //cek role staf di toko (admin, kasir)
+        //ambil toko aktif user dari toko_user
+        $tokoAktif = $user->tokoTugas()->wherePivot('is_active', true)->first();
+        $roleStaf = $tokoAktif?->pivot?->role;
+
+        if ($roleStaf && in_array($roleStaf, $roles, true)){
             return $next($request);
         }
 

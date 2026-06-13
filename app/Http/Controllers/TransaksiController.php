@@ -15,16 +15,70 @@ class TransaksiController extends Controller
 {
     public function __construct()
     {
-        // Hanya kasir/admin yang boleh create transaksi
+        // Hanya kasir/admin/owner/super_admin yang boleh create transaksi
         $this->middleware(function ($request, $next) {
-            $allowed = ['store'];
+            $allowed = ['index', 'show', 'store'];
             if (in_array($request->route()->getActionMethod(), $allowed)) {
-                if (!in_array(Auth::user()?->role, ['admin', 'kasir'])) {
+                if (!Auth::user()?->hasActiveRole(['super_admin', 'owner', 'admin', 'kasir'])) {
                     return response()->json(['message' => 'Forbidden'], 403);
                 }
             }
             return $next($request);
         });
+    }
+
+    #[OA\Get(
+        path: '/transaksi',
+        tags: ['Transaksi'],
+        summary: 'Daftar transaksi toko',
+        security: [['sanctum' => []]],
+        parameters: [
+            new OA\QueryParameter(name: 'q', description: 'Cari kode transaksi', required: false, schema: new OA\Schema(type: 'string')),
+            new OA\QueryParameter(name: 'page', required: false, schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Daftar transaksi berhasil diambil'),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
+            new OA\Response(response: 403, description: 'Forbidden')
+        ]
+    )]
+    public function index(Request $request)
+    {
+        $query = Transaksi::query()->with(['user:id,name']);
+
+        if ($request->filled('q')) {
+            $query->where('kode_transaksi', 'like', '%' . $request->q . '%');
+        }
+
+        // Global Scope BelongsToCurrentToko akan otomatis memfilter berdasarkan toko_id user
+        return response()->json($query->latest()->paginate(10));
+    }
+
+    #[OA\Get(
+        path: '/transaksi/{transaksi}',
+        tags: ['Transaksi'],
+        summary: 'Detail transaksi',
+        security: [['sanctum' => []]],
+        parameters: [
+            new OA\PathParameter(name: 'transaksi', required: true, schema: new OA\Schema(type: 'string'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Detail transaksi berhasil diambil'),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
+            new OA\Response(response: 403, description: 'Forbidden'),
+            new OA\Response(response: 404, description: 'Transaksi tidak ditemukan')
+        ]
+    )]
+    public function show($id)
+    {
+        $transaksi = Transaksi::with([
+            'user:id,name',
+            'detailTransaksi.produk:id,nama,kode_produk'
+        ])->findOrFail($id);
+
+        // Karena menggunakan HasUlids, pastikan $id diproses sebagai string
+        // Global Scope akan memastikan transaksi ini milik toko user tersebut
+        return response()->json($transaksi);
     }
 
     #[OA\Post(
@@ -42,13 +96,13 @@ class TransaksiController extends Controller
                         type: 'array',
                         items: new OA\Items(
                             properties: [
-                                new OA\Property(property: 'produk_id', type: 'integer', example: 1),
+                                new OA\Property(property: 'produk_id', type: 'string', example: '01kty...'),
                                 new OA\Property(property: 'jumlah', type: 'integer', example: 2)
                             ],
                             type: 'object'
                         )
                     ),
-                    new OA\Property(property: 'metode_pembayaran', type: 'string', example: 'tunai'),
+                    new OA\Property(property: 'metode_pembayaran', type: 'string', example: 'cash'),
                     new OA\Property(property: 'nominal_bayar', type: 'integer', example: 50000)
                 ]
             )
@@ -64,7 +118,12 @@ class TransaksiController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        $tokoId = $user->toko_id;
+        $tokoId = $user->getTokoAktifId();
+
+        if (!$tokoId) {
+            return response()->json(['message' => 'User tidak terhubung ke toko aktif.'], 403);
+        }
+
         $data = $request->validate([
             'items' => 'required|array|min:1',
             'items.*.produk_id' => 'required|exists:produk,id',

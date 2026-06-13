@@ -5,9 +5,11 @@ namespace App\Models;
 use App\Models\Concerns\BelongsToCurrentToko;
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
+
 class PengaturanToko extends Model
 {
-    use BelongsToCurrentToko;
+    use BelongsToCurrentToko, HasUlids;
 
     protected $table = 'pengaturan_toko';
 
@@ -20,7 +22,7 @@ class PengaturanToko extends Model
     protected function casts(): array
     {
         return [
-            'toko_id' => 'integer',
+            'toko_id' => 'string',
             'ppn' => 'integer',
         ];
     }

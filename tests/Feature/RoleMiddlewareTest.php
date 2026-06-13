@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Toko;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
@@ -31,9 +32,11 @@ class RoleMiddlewareTest extends TestCase
 
     public function test_admin_can_access_admin_route(): void
     {
+        $toko = Toko::factory()->create();
         $user = User::factory()->create([
-            'role' => 'admin',
+            'role' => 'staff',
         ]);
+        $user->tokoTugas()->attach($toko->id, ['role' => 'admin', 'is_active' => true]);
 
         Sanctum::actingAs($user);
 
@@ -44,9 +47,11 @@ class RoleMiddlewareTest extends TestCase
 
     public function test_kasir_cannot_access_admin_route(): void
     {
+        $toko = Toko::factory()->create();
         $user = User::factory()->create([
-            'role' => 'kasir',
+            'role' => 'staff',
         ]);
+        $user->tokoTugas()->attach($toko->id, ['role' => 'kasir', 'is_active' => true]);
 
         Sanctum::actingAs($user);
 
@@ -57,9 +62,11 @@ class RoleMiddlewareTest extends TestCase
 
     public function test_kasir_can_access_shared_role_route(): void
     {
+        $toko = Toko::factory()->create();
         $user = User::factory()->create([
-            'role' => 'kasir',
+            'role' => 'staff',
         ]);
+        $user->tokoTugas()->attach($toko->id, ['role' => 'kasir', 'is_active' => true]);
 
         Sanctum::actingAs($user);
 

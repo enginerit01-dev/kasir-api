@@ -69,7 +69,7 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Login berhasil.',
             'token' => $token,
-            'user' => $user->load('toko'),
+            'user' => $user->load($user->role === 'owner' ? 'tokoMilik' : 'tokoTugas'),
         ]);
     }
 
@@ -94,8 +94,10 @@ class AuthController extends Controller
     )]
     public function me(Request $request): JsonResponse
     {
+        $user = $request->user();
         return response()->json([
-            'user' => $request->user()->load('toko'),
+            'user' => $user
+            ->load($user->role === 'owner' ? 'tokoMilik' : 'tokoTugas'),
         ]);
     }
 

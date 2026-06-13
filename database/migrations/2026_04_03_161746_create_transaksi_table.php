@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transaksi', function (Blueprint $table) {
-            $table->id();
+            $table->ulid('id')->primary();
             $table->string('kode_transaksi', 50)->unique();
             $table->dateTime('tanggal');
             $table->unsignedBigInteger('subtotal');
@@ -22,8 +22,8 @@ return new class extends Migration
             $table->enum('metode_pembayaran', ['cash', 'qris', 'debit', 'kredit']);
             $table->unsignedBigInteger('kembalian');
             $table->unsignedTinyInteger('status')->default(0)->index();
-            $table->foreignId('user_id')->constrained()->restrictOnDelete();
-            $table->foreignId('toko_id')->constrained('toko')->restrictOnDelete();
+            $table->foreignUlid('user_id')->constrained()->restrictOnDelete();
+            $table->foreignUlid('toko_id')->constrained('toko')->restrictOnDelete();
             $table->timestamps();
         });
     }

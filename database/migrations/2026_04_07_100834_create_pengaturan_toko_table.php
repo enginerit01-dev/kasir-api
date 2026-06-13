@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pengaturan_toko', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('toko_id')->unique()->constrained('toko')->cascadeOnDelete();
+            $table->ulid('id')->primary();
+            $table->foreignUlid('toko_id')->unique()->constrained('toko')->cascadeOnDelete();
             $table->unsignedTinyInteger('ppn')->default(0);
             $table->text('catatan')->nullable();
             $table->timestamps();

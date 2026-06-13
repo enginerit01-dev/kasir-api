@@ -5,22 +5,24 @@ namespace Tests\Feature;
 use App\Models\Toko;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class AuthApiTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_user_can_register_and_receive_token(): void
+    public function test_owner_can_create_staff_user(): void
     {
-        $toko = Toko::factory()->create();
+        $owner = User::factory()->create(['role' => 'owner']);
+        $toko = Toko::factory()->create(['owner_id' => $owner->id]);
+        Sanctum::actingAs($owner);
 
-        $response = $this->postJson('/api/auth/register', [
+        $response = $this->postJson('/api/user', [
             'name' => 'Admin Kasir',
             'email' => 'admin@example.com',
             'username' => 'adminkasir',
             'password' => 'password123',
-            'password_confirmation' => 'password123',
             'role' => 'admin',
             'toko_id' => $toko->id,
         ]);
@@ -28,26 +30,31 @@ class AuthApiTest extends TestCase
         $response
             ->assertCreated()
             ->assertJsonStructure([
-                'message',
-                'token',
-                'user' => ['id', 'name', 'email', 'username', 'role', 'toko_id', 'toko'],
+                'id',
+                'name',
+                'email',
+                'username',
+                'role',
+                'toko_tugas',
             ]);
 
         $this->assertDatabaseHas('users', [
             'email' => 'admin@example.com',
             'username' => 'adminkasir',
-            'role' => 'admin',
+            'role' => 'staff',
         ]);
     }
 
     public function test_user_can_login_with_username_and_logout(): void
     {
+        $toko = Toko::factory()->create();
         $user = User::factory()->create([
             'username' => 'kasir1',
             'email' => 'kasir@example.com',
             'password' => 'password123',
-            'role' => 'kasir',
+            'role' => 'staff',
         ]);
+        $user->tokoTugas()->attach($toko->id, ['role' => 'kasir', 'is_active' => true]);
 
         $loginResponse = $this->postJson('/api/auth/login', [
             'login' => 'kasir1',

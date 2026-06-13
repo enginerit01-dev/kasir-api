@@ -282,20 +282,20 @@
                 ]
             }
         },
-        "/kategori-produk/{id}": {
+        "/kategori-produk/{kategori_produk}": {
             "get": {
                 "tags": [
                     "Kategori Produk"
                 ],
                 "summary": "Detail kategori produk",
-                "operationId": "2687ba23638586928e4f291c9650afcd",
+                "operationId": "3bb77983ae55bb73ade0151960e6d5b8",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "kategori_produk",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -321,14 +321,14 @@
                     "Kategori Produk"
                 ],
                 "summary": "Ubah kategori produk",
-                "operationId": "7faac741a27e017056bd07cf15e74d43",
+                "operationId": "d3de466a18f36abbb801ff240586ad96",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "kategori_produk",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -376,14 +376,14 @@
                     "Kategori Produk"
                 ],
                 "summary": "Hapus kategori produk",
-                "operationId": "ab2d629dba9fbf088f4bf145b669baed",
+                "operationId": "f4381a551662da2b13d08b15a2679bd5",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "kategori_produk",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -421,7 +421,7 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     },
                     {
@@ -618,7 +618,7 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     },
                     {
@@ -668,8 +668,8 @@
                                         "example": "Teh Botol"
                                     },
                                     "kategori_id": {
-                                        "type": "integer",
-                                        "example": 1
+                                        "type": "string",
+                                        "example": "01kty..."
                                     },
                                     "harga": {
                                         "type": "integer",
@@ -714,20 +714,20 @@
                 ]
             }
         },
-        "/produk/{id}": {
+        "/produk/{produk}": {
             "get": {
                 "tags": [
                     "Produk"
                 ],
                 "summary": "Detail produk",
-                "operationId": "a9b843ccf7030352b03d3fdf4f76b2ca",
+                "operationId": "8e04f455a07dc5d65ba8ba8f094a557d",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "produk",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -753,14 +753,14 @@
                     "Produk"
                 ],
                 "summary": "Ubah produk",
-                "operationId": "a58ff4a15b22ce4ba425f218eb8ea003",
+                "operationId": "2a621274dc23f399dcc9ec26993118a7",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "produk",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -775,8 +775,8 @@
                                         "example": "Teh Botol Sosro"
                                     },
                                     "kategori_id": {
-                                        "type": "integer",
-                                        "example": 1
+                                        "type": "string",
+                                        "example": "01kty..."
                                     },
                                     "harga": {
                                         "type": "integer",
@@ -828,14 +828,14 @@
                     "Produk"
                 ],
                 "summary": "Hapus produk",
-                "operationId": "a1dc3ef51ac1ad9d80905102f66131ec",
+                "operationId": "19fdc1eec8aefe5f939df26f2f9d1ced",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "produk",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -860,7 +860,541 @@
                 ]
             }
         },
+        "/toko": {
+            "get": {
+                "tags": [
+                    "Toko"
+                ],
+                "summary": "Daftar toko",
+                "operationId": "94155f70ffcdb506b43ab8fb99f5cfc1",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Cari nama atau alamat toko",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Nomor halaman",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Daftar toko berhasil diambil"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Toko"
+                ],
+                "summary": "Tambah toko baru",
+                "operationId": "ee2ae1502f77128658fa458cf4c1ee3f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nama",
+                                    "alamat",
+                                    "telepon",
+                                    "owner_id"
+                                ],
+                                "properties": {
+                                    "nama": {
+                                        "type": "string",
+                                        "example": "Toko Baru"
+                                    },
+                                    "alamat": {
+                                        "type": "string",
+                                        "example": "Jl. Merdeka No. 10"
+                                    },
+                                    "telepon": {
+                                        "type": "string",
+                                        "example": "081234567890"
+                                    },
+                                    "owner_id": {
+                                        "type": "string",
+                                        "example": "01kty..."
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Toko berhasil dibuat"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/toko/{toko}": {
+            "get": {
+                "tags": [
+                    "Toko"
+                ],
+                "summary": "Detail toko",
+                "operationId": "0a1c168f318f17cc834c90f080ac479f",
+                "parameters": [
+                    {
+                        "name": "toko",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detail toko berhasil diambil"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Toko tidak ditemukan"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Toko"
+                ],
+                "summary": "Ubah data toko",
+                "operationId": "acd24f4f1951a9340b5bee0f2ba64f13",
+                "parameters": [
+                    {
+                        "name": "toko",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nama": {
+                                        "type": "string",
+                                        "example": "Toko Updated"
+                                    },
+                                    "alamat": {
+                                        "type": "string",
+                                        "example": "Jl. Baru No. 15"
+                                    },
+                                    "owner_id": {
+                                        "type": "string",
+                                        "example": "01kty..."
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Toko berhasil diperbarui"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Toko tidak ditemukan"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Toko"
+                ],
+                "summary": "Hapus toko",
+                "operationId": "2bec0b661a5d07ac632bf28660276dea",
+                "parameters": [
+                    {
+                        "name": "toko",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Toko berhasil dihapus"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Toko tidak ditemukan"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/toko/{toko}/staf": {
+            "get": {
+                "tags": [
+                    "Staf Toko"
+                ],
+                "summary": "Daftar staf di toko",
+                "operationId": "e6385e6f56dd46762bd4996b3015ae0d",
+                "parameters": [
+                    {
+                        "name": "toko",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "role",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "admin",
+                                "kasir"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Daftar staf berhasil diambil"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Toko tidak ditemukan"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Staf Toko"
+                ],
+                "summary": "Assign staf ke toko",
+                "operationId": "94f935681006430f36462d78dc362364",
+                "parameters": [
+                    {
+                        "name": "toko",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "user_id",
+                                    "role"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "type": "string",
+                                        "example": "01kty..."
+                                    },
+                                    "role": {
+                                        "type": "string",
+                                        "example": "kasir",
+                                        "enum": [
+                                            "admin",
+                                            "kasir"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Staf berhasil di-assign ke toko"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Toko atau user tidak ditemukan"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/toko/{toko}/staf/{user}": {
+            "put": {
+                "tags": [
+                    "Staf Toko"
+                ],
+                "summary": "Update role atau status staf di toko",
+                "operationId": "dc992fb673ced793f399327b5441239e",
+                "parameters": [
+                    {
+                        "name": "toko",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "role": {
+                                        "type": "string",
+                                        "example": "admin",
+                                        "enum": [
+                                            "admin",
+                                            "kasir"
+                                        ]
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Data staf berhasil diperbarui"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Staf tidak ditemukan di toko ini"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Staf Toko"
+                ],
+                "summary": "Keluarkan staf dari toko",
+                "operationId": "7892b0cc1f76e085f22f8a7c3937223e",
+                "parameters": [
+                    {
+                        "name": "toko",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Staf berhasil dikeluarkan dari toko"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Staf tidak ditemukan di toko ini"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/transaksi": {
+            "get": {
+                "tags": [
+                    "Transaksi"
+                ],
+                "summary": "Daftar transaksi toko",
+                "operationId": "ef4e2cf57d8d7917aed6e29f970c156e",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Cari kode transaksi",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Daftar transaksi berhasil diambil"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
             "post": {
                 "tags": [
                     "Transaksi"
@@ -883,8 +1417,8 @@
                                         "items": {
                                             "properties": {
                                                 "produk_id": {
-                                                    "type": "integer",
-                                                    "example": 1
+                                                    "type": "string",
+                                                    "example": "01kty..."
                                                 },
                                                 "jumlah": {
                                                     "type": "integer",
@@ -896,7 +1430,7 @@
                                     },
                                     "metode_pembayaran": {
                                         "type": "string",
-                                        "example": "tunai"
+                                        "example": "cash"
                                     },
                                     "nominal_bayar": {
                                         "type": "integer",
@@ -923,6 +1457,44 @@
                     },
                     "422": {
                         "description": "Validasi gagal"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/transaksi/{transaksi}": {
+            "get": {
+                "tags": [
+                    "Transaksi"
+                ],
+                "summary": "Detail transaksi",
+                "operationId": "124fb87792734f8101f10d733c4c2eaf",
+                "parameters": [
+                    {
+                        "name": "transaksi",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detail transaksi berhasil diambil"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Transaksi tidak ditemukan"
                     }
                 },
                 "security": [
@@ -1021,8 +1593,8 @@
                                         "example": true
                                     },
                                     "toko_id": {
-                                        "type": "integer",
-                                        "example": 1
+                                        "type": "string",
+                                        "example": "01kty..."
                                     }
                                 },
                                 "type": "object"
@@ -1051,20 +1623,20 @@
                 ]
             }
         },
-        "/user/{id}": {
+        "/user/{user}": {
             "get": {
                 "tags": [
                     "User"
                 ],
                 "summary": "Detail user",
-                "operationId": "1ec60d4ee968175164a94c21f897f8ea",
+                "operationId": "6f888b021bf178e7e5dcbfe7746c2f9e",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "user",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -1093,14 +1665,14 @@
                     "User"
                 ],
                 "summary": "Ubah user",
-                "operationId": "786a794071cb7098f55a4a4911e7d3f0",
+                "operationId": "6bad92b32b8ea09447c40062e7bffd7a",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "user",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -1137,8 +1709,8 @@
                                         "example": true
                                     },
                                     "toko_id": {
-                                        "type": "integer",
-                                        "example": 1
+                                        "type": "string",
+                                        "example": "01kty..."
                                     }
                                 },
                                 "type": "object"
@@ -1174,14 +1746,14 @@
                     "User"
                 ],
                 "summary": "Hapus user",
-                "operationId": "a56b12a3694a926699892056cdcf8a9e",
+                "operationId": "f1373d92a4b21a84d9e9794c44e642c8",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "user",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -1241,6 +1813,14 @@
         {
             "name": "Produk",
             "description": "Produk"
+        },
+        {
+            "name": "Toko",
+            "description": "Toko"
+        },
+        {
+            "name": "Staf Toko",
+            "description": "Staf Toko"
         },
         {
             "name": "Transaksi",

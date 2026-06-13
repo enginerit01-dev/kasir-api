@@ -17,31 +17,56 @@ class TokoScopeTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_user_queries_are_limited_to_the_authenticated_users_toko(): void
+    public function test_transaksi_queries_are_limited_to_the_authenticated_users_toko(): void
     {
         $tokoA = Toko::factory()->create();
         $tokoB = Toko::factory()->create();
 
         $adminA = User::factory()->create([
-            'role' => 'admin',
+            'role' => 'staff',
+        ]);
+        $adminA->tokoTugas()->attach($tokoA->id, ['role' => 'admin', 'is_active' => true]);
+
+        $kasirB = User::factory()->create([
+            'role' => 'staff',
+        ]);
+        $kasirB->tokoTugas()->attach($tokoB->id, ['role' => 'kasir', 'is_active' => true]);
+
+        $transaksiA = Transaksi::withoutGlobalScopes()->create([
+            'kode_transaksi' => 'TRX-A',
+            'tanggal' => now(),
+            'subtotal' => 20000,
+            'total_ppn' => 2200,
+            'grand_total' => 22200,
+            'nominal_bayar' => 25000,
+            'metode_pembayaran' => 'cash',
+            'kembalian' => 2800,
+            'status' => 1,
+            'user_id' => $adminA->id,
             'toko_id' => $tokoA->id,
         ]);
 
-        $userA = User::factory()->create([
-            'toko_id' => $tokoA->id,
-        ]);
-
-        User::factory()->create([
+        $transaksiB = Transaksi::withoutGlobalScopes()->create([
+            'kode_transaksi' => 'TRX-B',
+            'tanggal' => now(),
+            'subtotal' => 18000,
+            'total_ppn' => 1980,
+            'grand_total' => 19980,
+            'nominal_bayar' => 20000,
+            'metode_pembayaran' => 'cash',
+            'kembalian' => 20,
+            'status' => 1,
+            'user_id' => $kasirB->id,
             'toko_id' => $tokoB->id,
         ]);
 
         Sanctum::actingAs($adminA);
 
-        $users = User::query()->pluck('id');
+        $transaksis = Transaksi::query()->pluck('id');
 
-        $this->assertCount(2, $users);
-        $this->assertTrue($users->contains($adminA->id));
-        $this->assertTrue($users->contains($userA->id));
+        $this->assertCount(1, $transaksis);
+        $this->assertTrue($transaksis->contains($transaksiA->id));
+        $this->assertFalse($transaksis->contains($transaksiB->id));
     }
 
     public function test_produk_queries_are_limited_to_the_authenticated_users_toko(): void
@@ -53,9 +78,9 @@ class TokoScopeTest extends TestCase
         ]);
 
         $adminA = User::factory()->create([
-            'role' => 'admin',
-            'toko_id' => $tokoA->id,
+            'role' => 'staff',
         ]);
+        $adminA->tokoTugas()->attach($tokoA->id, ['role' => 'admin', 'is_active' => true]);
 
         $produkA = Produk::create([
             'nama' => 'Es Teh',
@@ -92,9 +117,9 @@ class TokoScopeTest extends TestCase
             'kategori' => 'Snack',
         ]);
         $admin = User::factory()->create([
-            'role' => 'admin',
-            'toko_id' => $toko->id,
+            'role' => 'staff',
         ]);
+        $admin->tokoTugas()->attach($toko->id, ['role' => 'admin', 'is_active' => true]);
 
         Sanctum::actingAs($admin);
 
@@ -125,14 +150,14 @@ class TokoScopeTest extends TestCase
         ]);
 
         $adminA = User::factory()->create([
-            'role' => 'admin',
-            'toko_id' => $tokoA->id,
+            'role' => 'staff',
         ]);
+        $adminA->tokoTugas()->attach($tokoA->id, ['role' => 'admin', 'is_active' => true]);
 
         $kasirB = User::factory()->create([
-            'role' => 'kasir',
-            'toko_id' => $tokoB->id,
+            'role' => 'staff',
         ]);
+        $kasirB->tokoTugas()->attach($tokoB->id, ['role' => 'kasir', 'is_active' => true]);
 
         $produkA = Produk::withoutGlobalScopes()->create([
             'nama' => 'Nasi Goreng',

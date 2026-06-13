@@ -6,9 +6,11 @@ use App\Models\Concerns\BelongsToCurrentTokoViaTransaksi;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
+
 class DetailTransaksi extends Model
 {
-    use BelongsToCurrentTokoViaTransaksi;
+    use BelongsToCurrentTokoViaTransaksi, HasUlids;
 
     protected $table = 'detail_transaksi';
 
@@ -26,8 +28,8 @@ class DetailTransaksi extends Model
             'jumlah' => 'integer',
             'harga_saat_transaksi' => 'integer',
             'subtotal' => 'integer',
-            'transaksi_id' => 'integer',
-            'produk_id' => 'integer',
+            'transaksi_id' => 'string',
+            'produk_id' => 'string',
         ];
     }
 

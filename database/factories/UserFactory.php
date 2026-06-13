@@ -30,8 +30,7 @@ class UserFactory extends Factory
             'username' => fake()->unique()->userName(),
             'password' => static::$password ??= Hash::make('password'),
             'is_active' => true,
-            'role' => fake()->randomElement(['admin', 'kasir']),
-            'toko_id' => Toko::factory(),
+            'role' => fake()->randomElement(['super_admin', 'owner', 'staff']),
         ];
     }
 }

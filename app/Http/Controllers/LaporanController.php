@@ -17,7 +17,7 @@ class LaporanController extends Controller
         summary: 'Laporan transaksi kasir',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\QueryParameter(name: 'kasir_id', required: false, schema: new OA\Schema(type: 'integer')),
+            new OA\QueryParameter(name: 'kasir_id', required: false, schema: new OA\Schema(type: 'string')),
             new OA\QueryParameter(name: 'tanggal', required: false, schema: new OA\Schema(type: 'string', format: 'date'))
         ],
         responses: [
@@ -29,10 +29,10 @@ class LaporanController extends Controller
     public function kasir(Request $request)
     {
         $user = Auth::user();
-        if (!in_array($user->role, ['admin', 'kasir'])) {
+        if (! $user->hasActiveRole(['super_admin', 'owner', 'admin', 'kasir'])) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
-        $tokoId = $user->toko_id;
+        $tokoId = $user->getTokoAktifId();
         $kasirId = $request->input('kasir_id');
         $query = Transaksi::where('toko_id', $tokoId);
         if ($kasirId) {
@@ -62,10 +62,10 @@ class LaporanController extends Controller
     public function keuangan(Request $request)
     {
         $user = Auth::user();
-        if ($user->role !== 'admin') {
+        if (! $user->hasActiveRole(['super_admin', 'owner', 'admin'])) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
-        $tokoId = $user->toko_id;
+        $tokoId = $user->getTokoAktifId();
         $query = Transaksi::where('toko_id', $tokoId);
         if ($request->filled('tanggal')) {
             $query->whereDate('tanggal', $request->tanggal);
@@ -95,10 +95,10 @@ class LaporanController extends Controller
     public function produkTerlaris(Request $request)
     {
         $user = Auth::user();
-        if (!in_array($user->role, ['admin', 'kasir'])) {
+        if (! $user->hasActiveRole(['super_admin', 'owner', 'admin', 'kasir'])) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
-        $tokoId = $user->toko_id;
+        $tokoId = $user->getTokoAktifId();
         $tanggal = $request->input('tanggal');
         $query = DetailTransaksi::select('produk_id', DB::raw('SUM(jumlah) as total_terjual'))
             ->whereHas('transaksi', function($q) use ($tokoId, $tanggal) {

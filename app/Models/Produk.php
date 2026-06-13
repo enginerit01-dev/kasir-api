@@ -8,14 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
+
 class Produk extends Model
 {
-    use HasFactory, BelongsToCurrentToko;
+    use HasFactory, BelongsToCurrentToko, HasUlids;
 
     protected $table = 'produk';
 
     protected $fillable = [
         'nama',
+        'gambar',
         'harga',
         'stok',
         'kategori_id',
@@ -30,7 +33,8 @@ class Produk extends Model
             'harga' => 'integer',
             'stok' => 'integer',
             'is_active' => 'boolean',
-            'toko_id' => 'integer',
+            'toko_id' => 'string',
+            'gambar' => 'string',
         ];
     }
 

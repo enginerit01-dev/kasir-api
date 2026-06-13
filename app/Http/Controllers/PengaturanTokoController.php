@@ -21,7 +21,7 @@ class PengaturanTokoController extends Controller
     )]
     public function show()
     {
-        $tokoId = Auth::user()->toko_id;
+        $tokoId = Auth::user()->getTokoAktifId();
         $pengaturan = PengaturanToko::where('toko_id', $tokoId)->first();
         return response()->json($pengaturan);
     }
@@ -50,7 +50,7 @@ class PengaturanTokoController extends Controller
     )]
     public function update(Request $request)
     {
-        $tokoId = Auth::user()->toko_id;
+        $tokoId = Auth::user()->getTokoAktifId();
         $pengaturan = PengaturanToko::where('toko_id', $tokoId)->firstOrFail();
         $this->authorizeUpdate();
         $data = $request->validate([
@@ -67,8 +67,8 @@ class PengaturanTokoController extends Controller
 
     protected function authorizeUpdate()
     {
-        // Hanya admin yang boleh update pengaturan toko
-        if (Auth::user()?->role !== 'admin') {
+        // Hanya admin/owner/super_admin yang boleh update pengaturan toko
+        if (! Auth::user()?->hasActiveRole(['super_admin', 'owner', 'admin'])) {
             abort(403, 'Forbidden');
         }
     }

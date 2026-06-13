@@ -12,11 +12,11 @@ class ProdukController extends Controller
 {
     public function __construct()
     {
-        // Hanya admin yang boleh create, update, delete produk
+        // Hanya admin/owner/super_admin yang boleh create, update, delete produk
         $this->middleware(function ($request, $next) {
             $adminOnly = ['store', 'update', 'destroy'];
             if (in_array($request->route()->getActionMethod(), $adminOnly)) {
-                if (Auth::user()?->role !== 'admin') {
+                if (! Auth::user()?->hasActiveRole(['super_admin', 'owner', 'admin'])) {
                     return response()->json(['message' => 'Forbidden'], 403);
                 }
             }
@@ -30,7 +30,7 @@ class ProdukController extends Controller
         security: [['sanctum' => []]],
         parameters: [
             new OA\QueryParameter(name: 'q', required: false, schema: new OA\Schema(type: 'string')),
-            new OA\QueryParameter(name: 'kategori_id', required: false, schema: new OA\Schema(type: 'integer')),
+            new OA\QueryParameter(name: 'kategori_id', required: false, schema: new OA\Schema(type: 'string')),
             new OA\QueryParameter(name: 'page', required: false, schema: new OA\Schema(type: 'integer'))
         ],
         responses: [
@@ -67,7 +67,7 @@ class ProdukController extends Controller
                 required: ['nama', 'kategori_id', 'harga', 'stok', 'kode_produk'],
                 properties: [
                     new OA\Property(property: 'nama', type: 'string', example: 'Teh Botol'),
-                    new OA\Property(property: 'kategori_id', type: 'integer', example: 1),
+                    new OA\Property(property: 'kategori_id', type: 'string', example: '01kty...'),
                     new OA\Property(property: 'harga', type: 'integer', example: 5000),
                     new OA\Property(property: 'stok', type: 'integer', example: 20),
                     new OA\Property(property: 'kode_produk', type: 'string', example: 'PRD-001'),
@@ -97,12 +97,12 @@ class ProdukController extends Controller
     }
 
     #[OA\Get(
-        path: '/produk/{id}',
+        path: '/produk/{produk}',
         tags: ['Produk'],
         summary: 'Detail produk',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'id', required: true, schema: new OA\Schema(type: 'integer'))
+            new OA\PathParameter(name: 'produk', required: true, schema: new OA\Schema(type: 'string'))
         ],
         responses: [
             new OA\Response(response: 200, description: 'Detail produk berhasil diambil'),
@@ -117,19 +117,19 @@ class ProdukController extends Controller
     }
 
     #[OA\Put(
-        path: '/produk/{id}',
+        path: '/produk/{produk}',
         tags: ['Produk'],
         summary: 'Ubah produk',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'id', required: true, schema: new OA\Schema(type: 'integer'))
+            new OA\PathParameter(name: 'produk', required: true, schema: new OA\Schema(type: 'string'))
         ],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
                 properties: [
                     new OA\Property(property: 'nama', type: 'string', example: 'Teh Botol Sosro'),
-                    new OA\Property(property: 'kategori_id', type: 'integer', example: 1),
+                    new OA\Property(property: 'kategori_id', type: 'string', example: '01kty...'),
                     new OA\Property(property: 'harga', type: 'integer', example: 6000),
                     new OA\Property(property: 'stok', type: 'integer', example: 25),
                     new OA\Property(property: 'kode_produk', type: 'string', example: 'PRD-001'),
@@ -161,12 +161,12 @@ class ProdukController extends Controller
     }
 
     #[OA\Delete(
-        path: '/produk/{id}',
+        path: '/produk/{produk}',
         tags: ['Produk'],
         summary: 'Hapus produk',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'id', required: true, schema: new OA\Schema(type: 'integer'))
+            new OA\PathParameter(name: 'produk', required: true, schema: new OA\Schema(type: 'string'))
         ],
         responses: [
             new OA\Response(response: 204, description: 'Produk berhasil dihapus'),

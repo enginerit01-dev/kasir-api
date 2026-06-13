@@ -11,11 +11,11 @@ class KategoriProdukController extends Controller
 {
     public function __construct()
     {
-        // Hanya admin yang boleh create, update, delete kategori
+        // Hanya admin/owner/super_admin yang boleh create, update, delete kategori
         $this->middleware(function ($request, $next) {
             $adminOnly = ['store', 'update', 'destroy'];
             if (in_array($request->route()->getActionMethod(), $adminOnly, true)) {
-                if (Auth::user()?->role !== 'admin') {
+                if (! Auth::user()?->hasActiveRole(['super_admin', 'owner', 'admin'])) {
                     return response()->json(['message' => 'Forbidden'], 403);
                 }
             }
@@ -82,12 +82,12 @@ class KategoriProdukController extends Controller
     }
 
     #[OA\Get(
-        path: '/kategori-produk/{id}',
+        path: '/kategori-produk/{kategori_produk}',
         tags: ['Kategori Produk'],
         summary: 'Detail kategori produk',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'id', required: true, schema: new OA\Schema(type: 'integer'))
+            new OA\PathParameter(name: 'kategori_produk', required: true, schema: new OA\Schema(type: 'string'))
         ],
         responses: [
             new OA\Response(response: 200, description: 'Detail kategori berhasil diambil'),
@@ -103,12 +103,12 @@ class KategoriProdukController extends Controller
     }
 
     #[OA\Put(
-        path: '/kategori-produk/{id}',
+        path: '/kategori-produk/{kategori_produk}',
         tags: ['Kategori Produk'],
         summary: 'Ubah kategori produk',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'id', required: true, schema: new OA\Schema(type: 'integer'))
+            new OA\PathParameter(name: 'kategori_produk', required: true, schema: new OA\Schema(type: 'string'))
         ],
         requestBody: new OA\RequestBody(
             required: true,
@@ -140,12 +140,12 @@ class KategoriProdukController extends Controller
     }
 
     #[OA\Delete(
-        path: '/kategori-produk/{id}',
+        path: '/kategori-produk/{kategori_produk}',
         tags: ['Kategori Produk'],
         summary: 'Hapus kategori produk',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'id', required: true, schema: new OA\Schema(type: 'integer'))
+            new OA\PathParameter(name: 'kategori_produk', required: true, schema: new OA\Schema(type: 'string'))
         ],
         responses: [
             new OA\Response(response: 204, description: 'Kategori berhasil dihapus'),
