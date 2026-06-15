@@ -656,7 +656,7 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "required": [
                                     "nama",
@@ -692,7 +692,7 @@
                                     },
                                     "gambar": {
                                         "type": "string",
-                                        "example": "https://example.com/gambar.jpg",
+                                        "format": "binary",
                                         "nullable": true
                                     }
                                 },
@@ -777,7 +777,7 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "properties": {
                                     "nama": {
@@ -806,7 +806,7 @@
                                     },
                                     "gambar": {
                                         "type": "string",
-                                        "example": "https://example.com/gambar.jpg",
+                                        "format": "binary",
                                         "nullable": true
                                     }
                                 },
@@ -1491,18 +1491,17 @@
                 ]
             }
         },
-        "/transaksi/{transaksi}": {
+        "/transaksi/{id}": {
             "get": {
                 "tags": [
                     "Transaksi"
                 ],
                 "summary": "Detail transaksi",
-                "operationId": "124fb87792734f8101f10d733c4c2eaf",
+                "operationId": "827b0f1b69ad41b704c0411f6aed425c",
                 "parameters": [
                     {
-                        "name": "transaksi",
+                        "name": "id",
                         "in": "path",
-                        "description": "transaksi_id",
                         "required": true,
                         "schema": {
                             "type": "string"

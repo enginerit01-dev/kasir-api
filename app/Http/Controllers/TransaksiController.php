@@ -55,12 +55,12 @@ class TransaksiController extends Controller
     }
 
     #[OA\Get(
-        path: '/transaksi/{transaksi}',
+        path: '/transaksi/{id}',
         tags: ['Transaksi'],
         summary: 'Detail transaksi',
         security: [['sanctum' => []]],
         parameters: [
-            new OA\PathParameter(name: 'transaksi', description: 'transaksi_id', required: true, schema: new OA\Schema(type: 'string'))
+            new OA\PathParameter(name: 'id', required: true, schema: new OA\Schema(type: 'string'))
         ],
         responses: [
             new OA\Response(response: 200, description: 'Detail transaksi berhasil diambil'),
@@ -155,12 +155,19 @@ class TransaksiController extends Controller
             $ppn = $pengaturan?->ppn ?? 0;
             $totalPpn = (int) round($subtotal * $ppn / 100);
             $grandTotal = $subtotal + $totalPpn;
+
             if ($data['nominal_bayar'] < $grandTotal) {
                 abort(400, 'Nominal bayar kurang dari total.');
             }
+
+            // Generate kode transaksi yang unik
+            do {
+                $kodeTransaksi = 'TRX' . now()->format('YmdHis') . rand(100, 999);
+            } while (Transaksi::where('kode_transaksi', $kodeTransaksi)->exists());
+
             // Buat transaksi
             $transaksi = Transaksi::create([
-                'kode_transaksi' => 'TRX' . now()->format('YmdHis') . rand(100,999),
+                'kode_transaksi' => $kodeTransaksi,
                 'tanggal' => now(),
                 'subtotal' => $subtotal,
                 'total_ppn' => $totalPpn,
