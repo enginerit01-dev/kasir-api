@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Produk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use OpenApi\Attributes as OA;
 
@@ -68,7 +69,7 @@ class ProdukController extends Controller
             content: new OA\MediaType(
                 mediaType: 'multipart/form-data',
                 schema: new OA\Schema(
-                    required: ['nama', 'kategori_id', 'harga', 'stok', 'kode_produk'],
+                    required: ['nama', 'kategori_id', 'harga', 'stok'],
                     properties: [
                         new OA\Property(
                             property: 'nama',
@@ -89,11 +90,6 @@ class ProdukController extends Controller
                             property: 'stok',
                             type: 'integer',
                             example: 20
-                        ),
-                        new OA\Property(
-                            property: 'kode_produk',
-                            type: 'string',
-                            example: 'PRD-001'
                         ),
                         new OA\Property(
                             property: 'is_active',
@@ -148,10 +144,6 @@ class ProdukController extends Controller
             'kategori_id' => 'required|exists:kategori_produk,id',
             'harga' => 'required|integer',
             'stok' => 'required|integer',
-            'kode_produk' => [
-                'required', 'string', 'max:50',
-                Rule::unique('produk', 'kode_produk')->where('toko_id', $tokoId)
-            ],
             'is_active' => 'boolean',
             'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ];
@@ -162,6 +154,13 @@ class ProdukController extends Controller
 
         // Validasi akan otomatis melempar Exception jika gagal
         $data = $request->validate($rules);
+
+        // Isi otomatis kode_produk jika kosong
+        do {
+            $kodeProduk = 'PRD-' . strtoupper(Str::random(5));
+        } while (Produk::where('kode_produk', $kodeProduk)->exists());
+
+        $data['kode_produk'] = $kodeProduk;
 
         // Jika bukan super_admin, pastikan toko_id tetap menggunakan toko aktif user
         if ($user->role !== 'super_admin') {
@@ -233,11 +232,6 @@ class ProdukController extends Controller
                             type: 'integer',
                             example: 25
                         ),
-                        new OA\Property(
-                            property: 'kode_produk',
-                            type: 'string',
-                            example: 'PRD-001'
-                        ),
                         new OA\Property(property: 'is_active', type: 'boolean', example: true),
                         new OA\Property(
                             property: 'gambar',
@@ -279,10 +273,6 @@ class ProdukController extends Controller
             'kategori_id' => 'sometimes|required|exists:kategori_produk,id',
             'harga' => 'sometimes|required|integer',
             'stok' => 'sometimes|required|integer',
-            'kode_produk' => [
-                'sometimes', 'required', 'string', 'max:50',
-                Rule::unique('produk', 'kode_produk')->where('toko_id', $tokoId)->ignore($produk->id)
-            ],
             'is_active' => 'boolean',
             'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ];

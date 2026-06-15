@@ -662,8 +662,7 @@
                                     "nama",
                                     "kategori_id",
                                     "harga",
-                                    "stok",
-                                    "kode_produk"
+                                    "stok"
                                 ],
                                 "properties": {
                                     "nama": {
@@ -681,10 +680,6 @@
                                     "stok": {
                                         "type": "integer",
                                         "example": 20
-                                    },
-                                    "kode_produk": {
-                                        "type": "string",
-                                        "example": "PRD-001"
                                     },
                                     "is_active": {
                                         "type": "boolean",
@@ -795,10 +790,6 @@
                                     "stok": {
                                         "type": "integer",
                                         "example": 25
-                                    },
-                                    "kode_produk": {
-                                        "type": "string",
-                                        "example": "PRD-001"
                                     },
                                     "is_active": {
                                         "type": "boolean",
